@@ -8,14 +8,14 @@
      1.时间复杂度：（证明太复杂 汗！）
      假定Cn为n个元素所需要排序的比较次数
      Cn = 1 + n + (Cn-1 + Cn-2 + .... + C0) * 2 / n; 前面为切分的成本，后面为左右子序列成本；
-     nCn = n(n + 1) + 2 (C0+ ... + Cn - 1);
+     nCn = n(n + 1) + 2 (C0+ ... + Cn - 1);0,
      同时减去n - 1
      nCn - (n - 1)Cn-1 = 2n + 2Cn - 1   //没看懂
      同时除以n + 1
      Cn/(n + 1) = Cn-1/ n + 2 / (n + 1)
      所以 Cn  ～ 2（n + 1)(1 / 3+ 1 / 4 + ....+  1 / (n+1))
      Cn ~ 2nln(n) ~ 1.39nlgn
-     2.空间复杂度 o(n)   //切分n - 1
+     2.空间复杂度 o(lgn) ~ o(n)   //切分n - 1
 */
 #include <iostream>
 #include "basic_algo.h"
@@ -44,11 +44,33 @@ int partition(int list[], int lo, int hi)
   return j;
 }
 
+int partition2(int list[], int lo, int hi)   //nomoral aux
+{
+    int i = lo;
+    int j = hi + 1;
+    int v = list[i];
+    while(i < j)
+    {
+      while (i < j && less<int>()(v,list[j]))
+      {
+          --j;
+      }
+      list[i] = list[j];
+      while (i < j && less<int>()(list[i], v))
+      {
+          ++i;
+      }
+      list[j] = list[i];
+    }
+    list[i] = v;
+    return i;
+}
+
 void quick(int list[], int lo, int hi)
 {
   if (hi < lo)
       return;
-  int j = partition(list, lo, hi);
+  int j = partition2(list, lo, hi);
   quick(list, j+1, hi);
   quick(list, lo, j-1);
 }
